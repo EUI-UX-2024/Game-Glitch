@@ -162,7 +162,174 @@ cursor:pointer;
 box-shadow:0 0.4vw 0 #351560,0 0.9vw 1.2vw rgba(60,20,110,.4);
 transition:0.3s;
 }
-.start-btn:hover,.bottom-buttons button:hover{
+.start-btn:hover,.bottom-buttons button:hover-{
+transform:translateY(-5px);
+}
+
+.instructions{
+--u:min(1vw,1.75vh);
+display:flex;
+width:100%;
+height:100vh;
+min-height:600px;
+background-image:url("img/background.png");
+background-size:cover;
+background-position:center;
+align-items:center;
+justify-content:center;
+position:relative;
+overflow:hidden;
+}
+
+.instructions-box{
+position:relative;
+width:calc(var(--u)*88);
+aspect-ratio:1672/941;
+background-image:url("img/Glossy Purple Game UI Frame.png");
+background-size:100% 100%;
+background-repeat:no-repeat;
+color:#3a2a70;
+text-align:center;
+}
+
+.how-controller{
+position:absolute;
+width:calc(var(--u)*10.8);
+height:auto;
+top:calc(var(--u)*-3.7);
+left:calc(50% - calc(var(--u)*5.4));
+z-index:6;
+filter:drop-shadow(0 4px 6px rgba(50,20,100,.35));
+animation:move 3s ease-in-out infinite;
+}
+
+.how-title{
+position:absolute;
+top:11.3%;
+left:50%;
+transform:translate(-50%,-50%);
+z-index:5;
+font-family:'Lilita One','Arial Black',sans-serif;
+font-size:calc(var(--u)*4.4);
+font-weight:400;
+line-height:1;
+white-space:nowrap;
+color:#fff;
+-webkit-text-stroke:calc(var(--u)*0.25) #4b1f8c;
+paint-order:stroke fill;
+text-shadow:0 calc(var(--u)*0.25) 0 #ffc94d,0 calc(var(--u)*0.45) 0 #3b1870;
+}
+.how-content{
+position:absolute;
+top:25%;
+left:11%;
+right:11%;
+}
+.steps{
+display:flex;
+gap:calc(var(--u)*1.3);
+}
+
+.step{
+flex:1;
+padding:calc(var(--u)*1.3) calc(var(--u)*0.9) calc(var(--u)*1.3);
+background:linear-gradient(rgba(248,242,255,.85),rgba(228,212,252,.85));
+border:calc(var(--u)*0.18) solid #c6a2ee;
+border-radius:calc(var(--u)*2.2);
+box-shadow:0 calc(var(--u)*0.3) calc(var(--u)*0.8) rgba(100,60,160,.22);
+}
+.step-icon{
+height:calc(var(--u)*5.5);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:calc(var(--u)*4.4);
+line-height:1;
+}
+.step-icon img{
+height:100%;
+width:auto;
+}
+.step-pill{
+display:inline-flex;
+align-items:center;
+gap:calc(var(--u)*0.5);
+margin-top:calc(var(--u)*0.6);
+padding:calc(var(--u)*0.2) calc(var(--u)*1.3) calc(var(--u)*0.2) calc(var(--u)*0.25);
+background:linear-gradient(#5b2a9a,#3a1673);
+border:calc(var(--u)*0.12) solid #a77be0;
+border-radius:calc(var(--u)*3);
+color:#fff;
+font-size:calc(var(--u)*1.5);
+font-weight:800;
+box-shadow:0 calc(var(--u)*0.25) 0 #2a0f55;
+}
+
+.step-num{
+display:flex;
+align-items:center;
+justify-content:center;
+width:calc(var(--u)*2.7);
+height:calc(var(--u)*2.7);
+border-radius:50%;
+background:radial-gradient(circle at 35% 30%,#a86be8,#6a2fb5);
+border:calc(var(--u)*0.12) solid #d9b8ff;
+font-size:calc(var(--u)*1.6);
+}
+
+.step p{
+margin-top:calc(var(--u)*0.9);
+font-size:calc(var(--u)*1.4);
+font-weight:800;
+line-height:1.4;
+color:#3a2a70;
+}
+.levels-pill{
+display:block;
+width:calc(var(--u)*36);
+margin:calc(var(--u)*1.4) auto 0;
+padding:calc(var(--u)*0.55) calc(var(--u)*1);
+background:rgba(255,255,255,.55);
+border:calc(var(--u)*0.18) solid #c6a2ee;
+border-radius:calc(var(--u)*3);
+font-size:calc(var(--u)*1.6);
+font-weight:800;
+color:#3a2a70;
+}
+.how-buttons{
+display:flex;
+justify-content:center;
+gap:calc(var(--u)*2.6);
+margin-top:calc(var(--u)*1.3);
+}
+.how-buttons button{
+display:flex;
+align-items:center;
+justify-content:center;
+gap:calc(var(--u)*0.6);
+height:calc(var(--u)*4.4);
+border-radius:calc(var(--u)*3.5);
+font-family:'Nunito',Arial,sans-serif;
+font-size:calc(var(--u)*2.1);
+font-weight:800;
+cursor:pointer;
+transition:0.3s;
+}
+#backBtn{
+width:calc(var(--u)*16);
+background:linear-gradient(#8c45cc,#4e1c86);
+border:calc(var(--u)*0.18) solid #d9b4ff;
+color:#fff;
+box-shadow:0 calc(var(--u)*0.35) 0 #351560,0 calc(var(--u)*0.8) calc(var(--u)*1.1) rgba(60,20,110,.4);
+}
+#playBtn{
+width:calc(var(--u)*22);
+background:linear-gradient(#ffeaa0 0%,#ffd25a 50%,#f5ae2f 100%);
+border:calc(var(--u)*0.18) solid #fff3c4;
+color:#2f1565;
+box-shadow:0 calc(var(--u)*0.4) 0 #d18c2e,0 calc(var(--u)*0.9) calc(var(--u)*1.1) rgba(120,60,10,.35);
+}
+.how-buttons button:hover{
 transform:translateY(-5px);
 }
 @keyframes hover{
