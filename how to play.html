@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+<title>How to Play - Game Glitch</title>
+</head>
+<body>
+<section class="instructions" id="instructions">
+<div class="instructions-box">
+<img src="img/small-controller.gif" class="how-controller" alt="Game Controller">
+<h1 class="how-title">How to Play?</h1>
+<div class="how-content">
+<div class="steps">
+<div class="step">
+<div class="step-icon">🖥️</div>
+<div class="step-pill"><span class="step-num">1</span>Compare</div>
+<p>Look at two game interfaces and compare the designs.</p>
+</div>
+<div class="step">
+<div class="step-icon">✅</div>
+<div class="step-pill"><span class="step-num">2</span>Spot the Issue</div>
+<p>Find the UI/UX mistake and choose the better design.</p>
+</div>
+<div class="step">
+<div class="step-icon">🏆</div>
+<div class="step-pill"><span class="step-num">3</span>Score &amp; Progress</div>
+<p>Get points and complete all 3 Levels.</p>
+</div>
+</div>
+<div class="levels-pill">📊 3 Levels | 20 Questions per Level</div>
+<div class="how-buttons">
+<button id="backBtn">🏠 Home</button>
+<button id="playBtn">▶ Let's Play</button>
+</div>
+</div>
+</div>
+</section>
+<script> let backBtn = document.getElementById("backBtn");
+let playBtn = document.getElementById("playBtn");
+ backBtn.onclick = function(){
+window.location.href = "index.html";
+};
+playBtn.onclick = function(){
+window.location.href = "levels.html";
+};
+</script>
+</body>
+</html>
