@@ -16,7 +16,7 @@
 <div class="top-pill score-pill"><span class="pill-icon">⭐</span>Score: <span id="score">0</span></div>
 <div class="game-content">
 <div class="question-bar" id="questionText"></div>
-<div class="options">
+<div class="options" id="imageOptions">
 <div class="option" onclick="chooseAnswer('A')">
 <div class="shot" id="shotA"></div>
 <div class="ab">A</div>
@@ -26,6 +26,21 @@
 <div class="ab">B</div>
 </div>
 </div>
+
+<div class="mistake-wrap" id="mistakeOptions">
+<div class="game-screen" id="gameScreen"></div>
+<div class="text-options">
+<div class="text-opt" onclick="chooseAnswer('A')">
+<div class="t-badge">A</div>
+<p id="optA"></p>
+</div>
+<div class="text-opt" onclick="chooseAnswer('B')">
+<div class="t-badge">B</div>
+<p id="optB"></p>
+</div>
+</div>
+</div>
+
 </div>
 </div>
 <div class="result-overlay" id="resultOverlay">
@@ -52,6 +67,7 @@
 <script>
 let questions = [
 {
+type: "images",
 text: "Which health bar is easier to read during gameplay?",
 shotClass: "shot",
 a: `
@@ -68,6 +84,7 @@ correct: "A",
 explanation: "Option A has a bigger bar, a clear heart icon and high-contrast text, so players can read their health at a glance."
 },
 {
+type: "images",
 text: "Which button design is more visible and easier to click?",
 shotClass: "shot purple",
 a: `
@@ -84,6 +101,66 @@ b: `
 </div>`,
 correct: "B",
 explanation: "Option B uses bright, high-contrast buttons with clear icons, so players can see them and click them easily."
+},
+{
+type: "images",
+text: "Which icon is more clear and easier to understand?",
+shotClass: "shot light",
+a: `<img src="img/home-dull.png" class="icon-img" alt="">`,
+b: `<img src="img/home-clear.png" class="icon-img" alt="">`,
+correct: "B",
+explanation: "Option B is a simple, high-contrast home icon. Option A is dull and the plus sign makes it look like a hospital."
+},
+{
+type: "images",
+text: "Which button is more suitable for starting the game?",
+shotClass: "shot purple",
+a: `<div class="dbtn start-wide"><span>▶</span>Start</div>`,
+b: `<div class="ybtn start-wide"><span>▶</span>Start Game</div>`,
+correct: "B",
+explanation: "Option B is bright and clearly labeled 'Start Game'. Option A looks gray, like a disabled button."
+},
+{
+type: "images",
+text: "Which icon is more suitable for a Pause menu?",
+shotClass: "shot purple",
+a: `<div class="icon-btn"><i class="bar"></i><i class="bar"></i></div>`,
+b: `<div class="icon-btn"><span class="tri"></span></div>`,
+correct: "A",
+explanation: "The two vertical bars are the universal Pause symbol. The triangle means Play, so it would confuse players."
+},
+{
+type: "images",
+text: "Which icon is more suitable for Settings?",
+shotClass: "shot purple",
+a: `<div class="big-icon">⚙</div>`,
+b: `<div class="big-icon">🛠</div>`,
+correct: "A",
+explanation: "The gear is the standard Settings icon. The wrench and screwdriver look like a repair or tools menu."
+},
+{
+type: "mistake",
+text: "What's the UI mistake in this game screen?",
+screen: `
+<div class="gs-hud">
+<div class="gs-hero">
+<img src="img/hero.png" alt="">
+<div class="gs-info">
+<b>Lv. 5</b>
+<div class="gs-xp"><i></i><span>XP: 120 / 500</span></div>
+</div>
+</div>
+<div class="gs-money">
+<div class="gs-chip">🪙 250</div>
+<div class="gs-chip">💎 10</div>
+</div>
+</div>
+<img src="img/knight.png" class="gs-knight" alt="">
+<img src="img/sign.png" class="gs-sign" alt="">`,
+optionA: "The “Next” button points in the wrong direction",
+optionB: "The level number is missing",
+correct: "A",
+explanation: "A “Next” sign should point forward (to the right). An arrow pointing left suggests going back, which confuses players."
 }
 ];
 let score = 0;
@@ -93,10 +170,20 @@ function loadQuestion(){
 let q = questions[current];
 document.getElementById("qNum").innerHTML = current + 1;
 document.getElementById("questionText").innerHTML = q.text;
+if(q.type == "mistake"){
+document.getElementById("imageOptions").style.display = "none";
+document.getElementById("mistakeOptions").style.display = "block";
+document.getElementById("gameScreen").innerHTML = q.screen;
+document.getElementById("optA").innerHTML = q.optionA;
+document.getElementById("optB").innerHTML = q.optionB;
+}else{
+document.getElementById("mistakeOptions").style.display = "none";
+document.getElementById("imageOptions").style.display = "flex";
 document.getElementById("shotA").className = q.shotClass;
 document.getElementById("shotB").className = q.shotClass;
 document.getElementById("shotA").innerHTML = q.a;
 document.getElementById("shotB").innerHTML = q.b;
+}
 }
 function closeResult(){
 document.getElementById("resultOverlay").style.display = "none";
@@ -124,11 +211,19 @@ function tryAgain(){
 closeResult();
 answered = false;
 }
+function saveScore(){
+let name = localStorage.getItem("playerName") || "Player";
+let scores = JSON.parse(localStorage.getItem("scores")) || [];
+scores.push({ name: name, score: score, level: 1 });
+scores.sort(function(a, b){ return b.score - a.score; });
+localStorage.setItem("scores", JSON.stringify(scores.slice(0, 10)));
+}
 function nextQuestion(){
 closeResult();
 answered = false;
 current = current + 1;
 if(current >= questions.length){
+saveScore();
 alert("Great job! Your score: " + score + "\nMore questions are coming soon!");
 window.location.href = "levels.html";
 }else{
@@ -141,4 +236,4 @@ window.location.href = "index.html";
 loadQuestion();
 </script>
 </body>
-</html>
+</html>ررر
