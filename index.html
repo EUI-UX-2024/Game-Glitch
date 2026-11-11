@@ -28,13 +28,53 @@ video game interfaces.</p>
 </div>
 </div>
 </section>
+<div class="modal" id="nameModal">
+<div class="modal-box">
+<h3>Enter Your Name</h3>
+<form onsubmit="return saveAndGo()">
+<input type="text" id="playerName" placeholder="Your name..." maxlength="15">
+<p class="error" id="nameError"></p>
+<div class="modal-actions">
+<button type="submit" id="confirmBtn">Let's Go!</button>
+<button type="button" id="cancelBtn">Cancel</button>
+</div>
+</form>
+</div>
+</div>
 <script>
 let startBtn = document.getElementById("startBtn");
 let howBtn = document.getElementById("howBtn");
 let leaderBtn = document.getElementById("leaderBtn");
 let settingsBtn = document.getElementById("settingsBtn");
+let nameModal = document.getElementById("nameModal");
+let playerName = document.getElementById("playerName");
+let nameError = document.getElementById("nameError");
+let cancelBtn = document.getElementById("cancelBtn");
+let name;
 startBtn.onclick = function(){
-window.location.href = "levels.html";
+playerName.value = localStorage.getItem("playerName") || "";
+nameError.textContent = "";
+nameModal.classList.add("show");
+playerName.focus();
+};
+function save(){
+name = playerName.value.trim();
+localStorage.setItem("playerName", name);
+}
+function goToPage(){
+window.location = "levels.html";
+}
+function saveAndGo(){
+if (playerName.value.trim() === "") {
+nameError.textContent = "Please enter your name!";
+return false;
+}
+save();
+goToPage();
+return false;
+}
+cancelBtn.onclick = function(){
+nameModal.classList.remove("show");
 };
 howBtn.onclick = function(){
 window.location.href = "howtoplay.html";
