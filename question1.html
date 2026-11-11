@@ -16,6 +16,7 @@
 <div class="top-pill score-pill"><span class="pill-icon">⭐</span>Score: <span id="score">0</span></div>
 <div class="game-content">
 <div class="question-bar" id="questionText"></div>
+
 <div class="options" id="imageOptions">
 <div class="option" onclick="chooseAnswer('A')">
 <div class="shot" id="shotA"></div>
@@ -26,6 +27,7 @@
 <div class="ab">B</div>
 </div>
 </div>
+
 <div class="mistake-wrap" id="mistakeOptions">
 <div class="game-screen" id="gameScreen"></div>
 <div class="text-options">
@@ -39,6 +41,7 @@
 </div>
 </div>
 </div>
+
 </div>
 </div>
 <div class="result-overlay" id="resultOverlay">
@@ -160,13 +163,78 @@ optionA: "The “Next” button points in the wrong direction",
 optionB: "The level number is missing",
 correct: "A",
 explanation: "A “Next” sign should point forward (to the right). An arrow pointing left suggests going back, which confuses players."
+},
+{
+type: "images",
+text: "Which background is more suitable for the Home screen?",
+shotClass: "shot photo",
+a: `<img src="img/home-bg-good.png" class="fill-img" alt="">`,
+b: `<img src="img/cave.png" class="fill-img" alt="">`,
+correct: "A",
+explanation: "Option A is bright and welcoming, with a clear castle in the distance. Option B is dark and gloomy, which is not a good first impression for a Home screen."
+},
+{
+type: "images",
+text: "Which HUD (in-game interface) is clearer and easier to read?",
+shotClass: "shot photo",
+a: `
+<div class="hud-scene">
+<img src="img/home-bg-good.png" class="hs-bg" alt="">
+<img src="img/warrior.png" class="hs-char" alt="">
+<img src="img/hero.png" class="hs-hero" alt="">
+div class="hs-bars"><b>Lv. 5</b><i></i><i class="b"></i><i class="y"></i></div>
+<div class="hs-mini"></div>
+<div class="hs-potions"><i></i><i></i><i></i><i></i></div>
+<img src="img/skills.png" class="hs-skills" alt="">
+</div>`,
+b: `
+<div class="hud-scene">
+<img src="img/home-bg-good.png" class="hs-bg" alt="">
+<img src="img/warrior.png" class="hs-char" alt="">
+<img src="img/hero.png" class="hs-hero" alt="">
+<div class="hs-bars"><b>Lv. 5</b><i></i></div>
+<div class="hs-money"><span class="gs-chip">🪙 250</span><span class="gs-chip">💎 10</span></div>
+<div class="hs-stick"><i></i></div>
+<div class="hs-attack">⚔</div>
+</div>`,
+correct: "B",
+explanation: "Option B shows only the essential information with plenty of space around the character. Option A is overcrowded with too many icons and bars, so players cannot focus."
+},
+{
+type: "images",
+text: "Which button is more common for starting the game?",
+shotClass: "shot purple",
+a: `<div class="play-green"><i></i></div>`,
+b: `<div class="x-btn">✕</div>`,
+correct: "A",
+explanation: "A green Play button is the common symbol for starting. The red X usually means close or cancel, so it would confuse players."
+},
+{
+type: "images",
+text: "Which icon is more suitable for representing the inventory?",
+shotClass: "shot purple",
+a: `<img src="img/backpack.png" class="icon-img" alt="">`,
+b: `<img src="img/chest.png" class="icon-img" alt="">`,
+correct: "A",
+explanation: "A backpack is the familiar symbol for the items you carry. A treasure chest suggests rewards or loot, not your inventory."
+},
+{
+type: "images",
+text: "Which item is used to save your progress in the game?",
+shotClass: "shot purple",
+a: `<div class="big-icon">💾</div>`,
+b: `<div class="big-icon">⚙</div>`,
+correct: "A",
+explanation: "The floppy disk is the classic Save icon. The gear means Settings."
 }
 ];
+
 let score = 0;
 let correctCount = 0;
 let current = 0;
 let answered = false;
 let gotCorrect = false;
+
 function loadQuestion(){
 let q = questions[current];
 document.getElementById("qNum").innerHTML = current + 1;
@@ -187,11 +255,13 @@ document.getElementById("shotA").innerHTML = q.a;
 document.getElementById("shotB").innerHTML = q.b;
 }
 }
+
 function closeResult(){
 document.getElementById("resultOverlay").style.display = "none";
 document.getElementById("correctBox").style.display = "none";
 document.getElementById("wrongBox").style.display = "none";
 }
+
 function chooseAnswer(choice){
 if(answered == true){
 return;
@@ -210,10 +280,12 @@ document.getElementById("explanationText").innerHTML = q.explanation;
 document.getElementById("wrongBox").style.display = "block";
 }
 }
+
 function tryAgain(){
 closeResult();
 answered = false;
 }
+
 function saveScore(){
 let name = localStorage.getItem("playerName") || "Player";
 let scores = JSON.parse(localStorage.getItem("scores")) || [];
@@ -221,6 +293,7 @@ scores.push({ name: name, score: score, correct: correctCount, total: questions.
 scores.sort(function(a, b){ return b.score - a.score; });
 localStorage.setItem("scores", JSON.stringify(scores.slice(0, 10)));
 }
+
 function nextQuestion(){
 closeResult();
 answered = false;
