@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+<title>Select Level - Game Glitch</title>
+</head>
+<body>
+<section class="instructions" id="levels">
+<div class="instructions-box">
+<img src="img/small-controller.gif" class="how-controller" alt="Game Controller">
+<h1 class="how-title">Select Level</h1>
+<div class="levels-content">
+<div class="level-card active">
+<h2>Level 1</h2>
+<div class="level-img">
+<img src="img/castle-color.png" alt="Level 1">
+</div>
+<div class="q-pill">20 Questions</div>
+<button class="play-btn" id="level1Btn">▶</button>
+</div>
+<div class="level-card locked">
+<h2>Level 2</h2>
+<div class="level-img">
+<img src="img/castle-locked.png" alt="Level 2 locked">
+<div class="lock"></div>
+</div>
+<div class="q-pill">20 Questions</div>
+</div>
+
+<div class="level-card locked">
+<h2>Level 3</h2>
+<div class="level-img">
+<img src="img/castle-locked.png" alt="Level 3 locked">
+<div class="lock"></div>
+</div>
+<div class="q-pill">20 Questions</div>
+</div>
+</div>
+<button class="levels-back" id="levelsBackBtn">🏠 Back to Home</button>
+</div>
+</section>
+<script>
+let level1Btn = document.getElementById("level1Btn");
+let levelsBackBtn = document.getElementById("levelsBackBtn");
+level1Btn.onclick = function(){
+window.location.href = "question1.html";
+};
+levelsBackBtn.onclick = function(){
+window.location.href = "index.html";
+};
+</script>
+</body>
+</html>

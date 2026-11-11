@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+<title>Question - Game Glitch</title>
+</head>
+<body>
+<section class="instructions" id="game">
+<button class="game-home" id="gameHomeBtn" onclick="goHome()"><span>🏠</span></button>
+<div class="instructions-box">
+<img src="img/small-controller.gif" class="how-controller" alt="Game Controller">
+<h1 class="how-title q-title">Question <span id="qNum">1</span> / 20</h1>
+<div class="top-pill level-pill"><img src="img/castle-color.png" class="pill-img" alt="">Level 1</div>
+<div class="top-pill score-pill"><span class="pill-icon">⭐</span>Score: <span id="score">0</span></div>
+<div class="game-content">
+<div class="question-bar" id="questionText"></div>
+<div class="options">
+<div class="option" onclick="chooseAnswer('A')">
+<div class="shot" id="shotA"></div>
+<div class="ab">A</div>
+</div>
+<div class="option" onclick="chooseAnswer('B')">
+<div class="shot" id="shotB"></div>
+<div class="ab">B</div>
+</div>
+</div>
+</div>
+</div>
+<div class="result-overlay" id="resultOverlay">
+<div class="result-box" id="correctBox">
+<div class="res-badge">✅</div>
+<h2>Correct Answer!</h2>
+<div class="points">+10 Points</div>
+<p class="msg">Great job! You spotted the better design. 🎉</p>
+<div class="res-buttons">
+<button class="res-btn next-btn" onclick="nextQuestion()">Next Question →</button>
+</div>
+</div>
+<div class="result-box wide" id="wrongBox">
+<div class="res-badge">❌</div>
+<h2>Wrong Answer</h2>
+<p class="msg">That's not the best choice this time.</p>
+<p class="explain" id="explanationText"></p>
+<div class="res-buttons">
+<button class="res-btn try-btn" onclick="tryAgain()">🔄 Try Again</button>
+</div>
+</div>
+</div>
+</section>
+<script>
+let questions = [
+{
+text: "Which health bar is easier to read during gameplay?",
+shotClass: "shot",
+a: `
+<div class="hud">
+<div class="hero"><img src="img/hero.png" alt=""><span class="lv">Lv. 5</span></div>
+<div class="hp-good"><span>❤</span><b>100 / 100</b></div>
+</div>`,
+b: `
+<div class="hud">
+<div class="hero"><img src="img/hero.png" alt=""><span class="lv">Lv. 5</span></div>
+<div class="hp-bad"><i></i><b>100/100</b></div>
+</div>`,
+correct: "A",
+explanation: "Option A has a bigger bar, a clear heart icon and high-contrast text, so players can read their health at a glance."
+},
+{
+text: "Which button design is more visible and easier to click?",
+shotClass: "shot purple",
+a: `
+<div class="btn-col">
+<div class="dbtn">Play</div>
+<div class="dbtn">Settings</div>
+<div class="dbtn">Quit</div>
+</div>`,
+b: `
+<div class="btn-col">
+<div class="ybtn"><span>▶</span>Play</div>
+<div class="ybtn"><span>⚙</span>Settings</div>
+<div class="ybtn"><span>⏻</span>Quit</div>
+</div>`,
+correct: "B",
+explanation: "Option B uses bright, high-contrast buttons with clear icons, so players can see them and click them easily."
+}
+];
+let score = 0;
+let current = 0;
+let answered = false;
+function loadQuestion(){
+let q = questions[current];
+document.getElementById("qNum").innerHTML = current + 1;
+document.getElementById("questionText").innerHTML = q.text;
+document.getElementById("shotA").className = q.shotClass;
+document.getElementById("shotB").className = q.shotClass;
+document.getElementById("shotA").innerHTML = q.a;
+document.getElementById("shotB").innerHTML = q.b;
+}
+function closeResult(){
+document.getElementById("resultOverlay").style.display = "none";
+document.getElementById("correctBox").style.display = "none";
+document.getElementById("wrongBox").style.display = "none";
+}
+
+function chooseAnswer(choice){
+if(answered == true){
+return;
+}
+answered = true;
+let q = questions[current];
+document.getElementById("resultOverlay").style.display = "flex";
+if(choice == q.correct){
+score = score + 10;
+document.getElementById("score").innerHTML = score;
+document.getElementById("correctBox").style.display = "block";
+}else{
+document.getElementById("explanationText").innerHTML = q.explanation;
+document.getElementById("wrongBox").style.display = "block";
+}
+}
+function tryAgain(){
+closeResult();
+answered = false;
+}
+function nextQuestion(){
+closeResult();
+answered = false;
+current = current + 1;
+if(current >= questions.length){
+alert("Great job! Your score: " + score + "\nMore questions are coming soon!");
+window.location.href = "levels.html";
+}else{
+loadQuestion();
+}
+}
+function goHome(){
+window.location.href = "index.html";
+}
+loadQuestion();
+</script>
+</body>
+</html>
