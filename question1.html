@@ -26,7 +26,6 @@
 <div class="ab">B</div>
 </div>
 </div>
-
 <div class="mistake-wrap" id="mistakeOptions">
 <div class="game-screen" id="gameScreen"></div>
 <div class="text-options">
@@ -40,7 +39,6 @@
 </div>
 </div>
 </div>
-
 </div>
 </div>
 <div class="result-overlay" id="resultOverlay">
@@ -60,6 +58,7 @@
 <p class="explain" id="explanationText"></p>
 <div class="res-buttons">
 <button class="res-btn try-btn" onclick="tryAgain()">🔄 Try Again</button>
+<button class="res-btn next-btn" onclick="nextQuestion()">Next Question →</button>
 </div>
 </div>
 </div>
@@ -134,9 +133,9 @@ type: "images",
 text: "Which icon is more suitable for Settings?",
 shotClass: "shot purple",
 a: `<div class="big-icon">⚙</div>`,
-b: `<div class="big-icon">🛠</div>`,
+b: `<div class="big-icon">🔧</div>`,
 correct: "A",
-explanation: "The gear is the standard Settings icon. The wrench and screwdriver look like a repair or tools menu."
+explanation: "The gear is the standard Settings icon. The wrench looks like a repair or tools menu."
 },
 {
 type: "mistake",
@@ -164,12 +163,15 @@ explanation: "A “Next” sign should point forward (to the right). An arrow po
 }
 ];
 let score = 0;
+let correctCount = 0;
 let current = 0;
 let answered = false;
+let gotCorrect = false;
 function loadQuestion(){
 let q = questions[current];
 document.getElementById("qNum").innerHTML = current + 1;
 document.getElementById("questionText").innerHTML = q.text;
+gotCorrect = false;
 if(q.type == "mistake"){
 document.getElementById("imageOptions").style.display = "none";
 document.getElementById("mistakeOptions").style.display = "block";
@@ -190,7 +192,6 @@ document.getElementById("resultOverlay").style.display = "none";
 document.getElementById("correctBox").style.display = "none";
 document.getElementById("wrongBox").style.display = "none";
 }
-
 function chooseAnswer(choice){
 if(answered == true){
 return;
@@ -200,6 +201,8 @@ let q = questions[current];
 document.getElementById("resultOverlay").style.display = "flex";
 if(choice == q.correct){
 score = score + 10;
+correctCount = correctCount + 1;
+gotCorrect = true;
 document.getElementById("score").innerHTML = score;
 document.getElementById("correctBox").style.display = "block";
 }else{
@@ -214,7 +217,7 @@ answered = false;
 function saveScore(){
 let name = localStorage.getItem("playerName") || "Player";
 let scores = JSON.parse(localStorage.getItem("scores")) || [];
-scores.push({ name: name, score: score, level: 1 });
+scores.push({ name: name, score: score, correct: correctCount, total: questions.length, level: 1 });
 scores.sort(function(a, b){ return b.score - a.score; });
 localStorage.setItem("scores", JSON.stringify(scores.slice(0, 10)));
 }
@@ -224,7 +227,7 @@ answered = false;
 current = current + 1;
 if(current >= questions.length){
 saveScore();
-alert("Great job! Your score: " + score + "\nMore questions are coming soon!");
+alert("Great job! Your score: " + score + "\nCorrect answers: " + correctCount + " / " + questions.length + "\nMore questions are coming soon!");
 window.location.href = "levels.html";
 }else{
 loadQuestion();
@@ -236,4 +239,4 @@ window.location.href = "index.html";
 loadQuestion();
 </script>
 </body>
-</html>ررر
+</html>

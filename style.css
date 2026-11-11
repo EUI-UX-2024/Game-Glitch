@@ -1205,6 +1205,13 @@ font-weight:800;
 line-height:1.2;
 color:#2f1a72;
 }
+.result-box.wide .res-buttons{
+gap:calc(var(--u)*1.6);
+}
+.result-box.wide .res-btn{
+padding:0 calc(var(--u)*2.2);
+font-size:calc(var(--u)*1.9);
+}
 @keyframes pop{
 0%{
 transform:scale(0.7);
