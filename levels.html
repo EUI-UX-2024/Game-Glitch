@@ -12,44 +12,68 @@
 <img src="img/small-controller.gif" class="how-controller" alt="Game Controller">
 <h1 class="how-title">Select Level</h1>
 <div class="levels-content">
-<div class="level-card active">
+<div class="level-card active" id="level1Card">
 <h2>Level 1</h2>
 <div class="level-img">
 <img src="img/castle-color.png" alt="Level 1">
 </div>
-<div class="q-pill">20 Questions</div>
+<div class="q-pill">15 Questions</div>
 <button class="play-btn" id="level1Btn">▶</button>
 </div>
-<div class="level-card locked">
+<div class="level-card locked" id="level2Card">
 <h2>Level 2</h2>
 <div class="level-img">
-<img src="img/castle-locked.png" alt="Level 2 locked">
-<div class="lock"></div>
+<img src="img/castle-locked.png" id="level2Image" alt="Level 2">
+<div class="lock" id="level2Lock"></div>
 </div>
-<div class="q-pill">20 Questions</div>
+<div class="q-pill">15 Questions</div>
+<button class="play-btn" id="level2Btn" style="display:none">▶</button>
 </div>
-
-<div class="level-card locked">
+<div class="level-card locked" id="level3Card">
 <h2>Level 3</h2>
 <div class="level-img">
-<img src="img/castle-locked.png" alt="Level 3 locked">
-<div class="lock"></div>
+<img src="img/castle-locked.png" id="level3Image" alt="Level 3">
+<div class="lock" id="level3Lock"></div>
 </div>
-<div class="q-pill">20 Questions</div>
+<div class="q-pill">15 Questions</div>
+<button class="play-btn" id="level3Btn" style="display:none">▶</button>
 </div>
 </div>
 <button class="levels-back" id="levelsBackBtn">🏠 Back to Home</button>
 </div>
 </section>
 <script>
-let level1Btn = document.getElementById("level1Btn");
-let levelsBackBtn = document.getElementById("levelsBackBtn");
-level1Btn.onclick = function(){
-window.location.href = "question1.html";
-};
-levelsBackBtn.onclick = function(){
-window.location.href = "index.html";
-};
+let level1Btn=document.getElementById("level1Btn");
+let level2Btn=document.getElementById("level2Btn");
+let level3Btn=document.getElementById("level3Btn");
+let levelsBackBtn=document.getElementById("levelsBackBtn");
+let unlockedLevel=Number(localStorage.getItem("unlockedLevel"))||1;
+if(unlockedLevel>=2){
+document.getElementById("level2Card").classList.remove("locked");
+document.getElementById("level2Card").classList.add("active");
+document.getElementById("level2Image").src="img/castle-color.png";
+document.getElementById("level2Lock").style.display="none";
+level2Btn.style.display="block";
+}
+if(unlockedLevel>=3){
+document.getElementById("level3Card").classList.remove("locked");
+document.getElementById("level3Card").classList.add("active");
+document.getElementById("level3Image").src="img/castle-color.png";
+document.getElementById("level3Lock").style.display="none";
+level3Btn.style.display="block";
+}
+level1Btn.addEventListener("click",function(){
+window.location.href="question1.html";
+});
+level2Btn.addEventListener("click",function(){
+window.location.href="question2.html";
+});
+level3Btn.addEventListener("click",function(){
+window.location.href="question3.html";
+});
+levelsBackBtn.addEventListener("click",function(){
+window.location.href="index.html";
+});
 </script>
 </body>
 </html>
