@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+<title>Question - Game Glitch (Level 2)</title>
+</head>
+<body>
+<section class="instructions" id="game">
+<button class="game-home" id="gameHomeBtn" onclick="goHome()"><span>🏠</span></button>
+<div class="instructions-box" id="gameBox">
+<img src="img/small-controller.gif" class="how-controller" alt="Game Controller">
+<h1 class="how-title q-title">Question <span id="qNum">1</span> / <span id="qTotal">15</span></h1>
+<div class="top-pill level-pill"><img src="img/castle-color.png" class="pill-img" alt="">Level 2</div>
+<div class="top-pill score-pill"><span class="pill-icon">⭐</span>Score: <span id="score">0</span></div>
+<div class="game-content">
+<div class="question-bar" id="questionText"></div>
+<div class="options" id="imageOptions">
+<div class="option" onclick="chooseAnswer('A')">
+<div class="shot" id="shotA"></div>
+<div class="ab">A</div>
+</div>
+<div class="option" onclick="chooseAnswer('B')">
+<div class="shot" id="shotB"></div>
+<div class="ab">B</div>
+</div>
+</div>
+<div class="mistake-wrap" id="mistakeOptions">
+<div class="game-screen" id="gameScreen"></div>
+<div class="text-options">
+<div class="text-opt" onclick="chooseAnswer('A')">
+<div class="t-badge">A</div>
+<p id="optA"></p>
+</div>
+<div class="text-opt" onclick="chooseAnswer('B')">
+<div class="t-badge">B</div>
+<p id="optB"></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="result-overlay" id="resultOverlay">
+<div class="result-box" id="correctBox">
+<div class="res-badge">✅</div>
+<h2>Correct Answer!</h2>
+<div class="points" id="pointsText">+10 Points</div>
+<p class="msg">Great job! You spotted the better design. 🎉</p>
+<div class="res-buttons">
+<button class="res-btn next-btn" onclick="nextQuestion()">Next Question →</button>
+</div>
+</div>
+<div class="result-box wide" id="wrongBox">
+<div class="res-badge">❌</div>
+<h2>Wrong Answer</h2>
+<p class="msg">That's not the best choice this time.</p>
+<p class="explain" id="explanationText"></p>
+<div class="res-buttons">
+<button class="res-btn try-btn" onclick="tryAgain()">🔄 Try Again</button>
+<button class="res-btn next-btn" onclick="nextQuestion()">Next Question →</button>
+</div>
+</div>
+</div>
+<div class="final-screen" id="finalScreen">
+<div class="final-box">
+<img src="img/trophy.png" class="final-trophy" alt="">
+<h2 class="final-title">Game Complete!</h2>
+<div class="final-stats">
+<div class="stat"><span class="stat-icon">🎯</span><div><small>Correct</small><b id="fCorrect">0</b></div></div>
+<div class="stat"><span class="stat-icon">❌</span><div><small>Incorrect</small><b id="fWrong">0</b></div></div>
+<div class="stat"><span class="stat-icon">⭐</span><div><small>Final Score</small><b id="fScore">0</b></div></div>
+<div class="stat"><div class="ring" id="fRing"><span id="fPercent">0%</span></div></div>
+</div>
+<div class="final-msg">
+<h3 id="fTitle"></h3>
+<p id="fText"></p>
+</div>
+<button class="res-btn next-btn final-btn" onclick="nextLevel()">Next Level →</button>
+</div>
+</div>
+</section>
+<script>
+let questions = [
+/* ---------- Q1: Inventory (correct B) ---------- */
+{
+type: "images",
+text: "Which game Inventory design is better for the player?",
+shotClass: "shot purple",
+a: `
+<div class="l2-grid">
+<div class="l2-cell">⚔️</div><div class="l2-cell">🧪</div><div class="l2-cell">🪙</div>
+<div class="l2-cell">💎</div><div class="l2-cell">🔮</div><div class="l2-cell">🛡️</div>
+<div class="l2-cell"></div><div class="l2-cell"></div><div class="l2-cell"></div>
+</div>`,
+b: `
+<div class="l2-grid">
+<div class="l2-cell lab sel">⚔️<small>Sword</small><small>×1</small></div>
+<div class="l2-cell lab">🧪<small>Health Potion</small><small>×3</small></div>
+<div class="l2-cell lab">🪙<small>Coin</small><small>×250</small></div>
+<div class="l2-cell lab">💎<small>Crystal</small><small>×5</small></div>
+<div class="l2-cell lab">🔮<small>Mana Potion</small><small>×2</small></div>
+<div class="l2-cell lab">🛡️<small>Shield</small><small>×1</small></div>
+</div>`,
+correct: "B",
+explanation: "Option B shows a name and a quantity under every item, so players know exactly what they have. Option A only shows icons, which forces players to guess."
+},
+/* ---------- Q2: Shop (correct A) ---------- */
+{
+type: "images",
+text: "Which Shop design is better for the player?",
+shotClass: "shot purple",
+a: `
+<div class="l2-col">
+<span class="gs-chip">🪙 1,250</span>
+<div class="l2-row">
+<div class="l2-card sel">⚔️<b>🪙 500</b><div class="l2-btn y">Buy</div></div>
+<div class="l2-card">🧪<b>🪙 150</b><div class="l2-btn y">Buy</div></div>
+<div class="l2-card">🛡️<b>🪙 800</b><div class="l2-btn y">Buy</div></div>
+</div>
+</div>`,
+b: `
+<div class="l2-row">
+<div class="l2-card">⚔️<div class="l2-btn">Buy</div></div>
+<div class="l2-card">🧪<div class="l2-btn">Buy</div></div>
+<div class="l2-card">🛡️<div class="l2-btn">Buy</div></div>
+</div>`,
+correct: "A",
+explanation: "Option A shows the price of every item, the player's coin balance, and bright Buy buttons. Option B hides the prices, so players don't know what they are paying."
+},
+/* ---------- Q3: Character Selection (correct B) ---------- */
+{
+type: "images",
+text: "Which Character Selection design is better for the player?",
+shotClass: "shot purple",
+a: `
+<div class="l2-col">
+<div class="l2-row">
+<span class="l2-arrow">◀</span>
+<img class="l2-trio" src="img/Colorful Cartoon Character Trio.png" alt="">
+<span class="l2-arrow">▶</span>
+</div>
+<div class="l2-btn">Select</div>
+</div>`,
+b: `
+<div class="l2-row">
+<img class="l2-tall" src="img/Stacked Cartoon Hero Portraits.png" alt="">
+<img class="l2-tall" src="img/Chibi RPG Hero with Flowing Red Cape.png" alt="">
+<div class="l2-stats">
+<h4>Hero</h4>
+❤ Health<div class="l2-bar"><i style="width:90%;background:#ff4a62"></i></div>
+⚔ Attack<div class="l2-bar"><i style="width:60%;background:#ffc83b"></i></div>
+🛡 Defense<div class="l2-bar"><i style="width:70%;background:#3ba0ff"></i></div>
+<div class="l2-btn y" style="margin:0 auto">Select</div>
+</div>
+</div>`,
+correct: "B",
+explanation: "Option B shows a large preview and the stats (Health, Attack, Defense) so players can compare characters before choosing. Option A only shows small faces with no information."
+},
+/* ---------- Q4: Quest Log (correct A) ---------- */
+{
+type: "images",
+text: "Which Quest Log design is easier for the player to understand?",
+shotClass: "shot purple",
+a: `
+<div class="l2-quest">
+<div class="l2-q clean"><span>❗</span><span>Defeat Goblins</span><em>0 / 5</em><span>›</span></div>
+<div class="l2-q clean"><span>❓</span><span>Collect Gems</span><em>0 / 3</em><span>›</span></div>
+<div class="l2-q clean"><span>⭐</span><span>Find the Key</span><em>✔</em><span>›</span></div>
+</div>`,
+b: `
+<div class="l2-quest">
+<div class="l2-q"><span>❗</span><i class="l2-dash"></i><span>☐</span></div>
+<div class="l2-q"><span>❓</span><i class="l2-dash"></i><em>0/5</em></div>
+<div class="l2-q"><span>📜</span><i class="l2-dash"></i><em>✔</em></div>
+<div class="l2-q"><span>🔒</span><i class="l2-dash"></i><em>...</em></div>
+</div>`,
+correct: "A",
+explanation: "Option A uses short, readable quest names with clear progress counters. Option B has unreadable lines and mixed symbols, so players can't tell what to do."
+},
+/* ---------- Q5: Pause Menu (correct B) ---------- */
+{
+type: "images",
+text: "Which Pause Menu has a better button hierarchy?",
+shotClass: "shot purple",
+a: `
+<div class="l2-col">
+<div class="l2-btn red big">✕ Quit Game</div>
+<div class="l2-btn small">Resume</div>
+<div class="l2-btn small">Settings</div>
+</div>`,
+b: `
+<div class="l2-col">
+<div class="l2-btn y big">▶ Resume</div>
+<div class="l2-btn wide">⚙ Settings</div>
+<div class="l2-btn ghost">Quit</div>
+</div>`,
+correct: "B",
+explanation: "Option B makes the main action (Resume) the most visible and keeps the risky Quit button small and separate. In Option A, Quit is the biggest button, so players could leave the game by accident."
+},
+/* ---------- Q6: Mistake – popup blocking gameplay (correct A) ---------- */
+{
+type: "mistake",
+text: "What's the UI mistake in this game screen?",
+screen: `
+<div class="gs-hud">
+<div class="gs-hero">
+<img src="img/hero.png" alt="">
+<div class="gs-info">
+<b>Lv. 5</b>
+<div class="gs-xp"><i></i><span>XP: 120 / 500</span></div>
+</div>
+</div>
+<div class="gs-money">
+<div class="gs-chip">🪙 250</div>
+<div class="gs-chip">💎 10</div>
+</div>
+</div>
+<img src="img/knight.png" class="gs-knight" alt="">
+<div class="l2-popup">🎁 Special Offer!<small>Buy 500 gems now</small><div class="l2-btn y">Buy</div></div>`,
+optionA: "A pop-up covers the character during gameplay",
+optionB: "The coin counter is too small",
+correct: "A",
+explanation: "A pop-up in the middle of the screen blocks the player's view and interrupts the game. Offers should appear in menus or between levels, not on top of gameplay."
+},
+/* ---------- Q7: Difficulty Selection (correct A) ---------- */
+{
+type: "images",
+text: "Which Difficulty Selection design is clearer and more engaging for the player?",
+shotClass: "shot purple",
+a: `
+<div class="l2-row">
+<div class="l2-diff e"><span class="ic">⭐</span>Easy<small>For New Players</small><small>⭐☆☆</small></div>
+<div class="l2-diff n"><span class="ic">⚔️</span>Normal<small>A Balanced Challenge</small><small>⭐⭐☆</small></div>
+<div class="l2-diff h"><span class="ic">👑</span>Hard<small>For Experts</small><small>⭐⭐⭐</small></div>
+</div>`,
+b: `
+<div class="l2-col">
+<div class="l2-btn wide">Easy</div>
+<div class="l2-btn wide">Normal</div>
+<div class="l2-btn wide">Hard</div>
+</div>`,
+correct: "A",
+explanation: "Option A uses colors, icons, short descriptions and stars so players understand each level before choosing. Option B has three identical buttons with no extra information."
+},
+/* ---------- Q8: Game Over (correct B) ---------- */
+{
+type: "images",
+text: "Which Game Over screen helps the player decide what to do next?",
+shotClass: "shot purple",
+a: `<img class="l2-img-big" src="img/Glowing Skull Game Over Sign.png" alt="">`,
+b: `
+<div class="l2-col">
+<img class="l2-img-mid" src="img/Skull and Spears Game Over Badge.png" alt="">
+<div class="l2-btn y wide">🔄 Retry</div>
+<div class="l2-btn wide">🏠 Main Menu</div>
+</div>`,
+correct: "B",
+explanation: "Option B gives the player clear next-step choices with Retry and Main Menu. Option A is a dead end because it has no buttons."
+},
+/* ---------- Q9: Progression (correct A) ---------- */
+{
+type: "images",
+text: "Which Progression system is more motivating for the player?",
+shotClass: "shot purple",
+a: `
+<div class="l2-col">
+<div class="l2-title">👑 Level 5</div>
+<div class="l2-txt">250 / 500 XP</div>
+<div class="l2-xp gold"><i></i></div>
+<div class="l2-title">Next Reward</div>
+<div class="l2-row">
+<div class="l2-rew sel"><img class="l2-chest" src="img/chest.png" alt=""></div>
+<div class="l2-rew">🪙<small>×500</small></div>
+<div class="l2-rew">💎<small>×5</small></div>
+</div>
+</div>`,
+b: `
+<div class="l2-col">
+<div class="l2-title">Level 5</div>
+<div class="l2-xp"><i></i></div>
+<div class="l2-txt">250 / 500 XP</div>
+</div>`,
+correct: "A",
+explanation: "Option A shows the next reward, which gives the player a goal to reach. Option B shows only a progress bar, so there is little reason to keep playing."
+},
+/* ---------- Q10: Tutorial (correct B) ---------- */
+{
+type: "images",
+text: "Which Tutorial design helps new players learn the game more easily?",
+shotClass: "shot purple",
+a: `
+<div class="l2-row">
+<img class="l2-hero" src="img/Hooded Hero with Glowing Question Mark.png" alt="">
+<div class="l2-col">
+<div class="l2-say">Use the buttons to move and attack.</div>
+<div class="l2-btn">Next ›</div>
+<div class="l2-dots"><i></i><i></i><i></i><i></i></div>
+</div>
+</div>`,
+b: `
+<div class="l2-row">
+<div class="l2-col">
+<img class="l2-hero" src="img/Chibi Mage with Neon Navigation Arrows.png" alt="">
+<div class="l2-txt">Move</div>
+</div>
+<div class="l2-col">
+<div class="l2-act"><span>⚔️</span>Attack</div>
+<div class="l2-act"><span>🧪</span>Use Item</div>
+</div>
+</div>`,
+correct: "B",
+explanation: "Option B uses clear icons and visual instructions, making it easier and faster for new players to understand. Option A relies on a text sentence and several pages to click through."
+},
+/* ---------- Q11: Mission Complete (correct A) ---------- */
+{
+type: "images",
+text: "Which Mission Complete design feels more rewarding for the player?",
+shotClass: "shot night",
+a: `
+<div class="l2-col">
+<div class="l2-row">
+<img class="l2-img-sm" src="img/trophy.png" alt="">
+<div class="l2-title">Mission Complete!</div>
+</div>
+<div class="l2-row">
+<div class="l2-rew">🪙<small>×500</small></div>
+<div class="l2-rew">💎<small>×5</small></div>
+<div class="l2-rew">✨<small>×250 XP</small></div>
+</div>
+<div class="l2-btn y">Continue</div>
+</div>`,
+b: `
+<div class="l2-col">
+<div class="l2-title">Mission Complete</div>
+<div class="l2-icon">⭐</div>
+<div class="l2-txt">You Finished the Mission!</div>
+<div class="l2-btn">OK</div>
+</div>`,
+correct: "A",
+explanation: "Option A celebrates the achievement and clearly shows the rewards the player earned. Option B only says the mission is finished, so it feels empty."
+},
+/* ---------- Q12: Loading Screen (correct B) ---------- */
+{
+type: "images",
+text: "Which Loading Screen design gives a better player experience?",
+shotClass: "shot photo",
+a: `
+<div class="hud-scene" style="background:#2a1a55">
+<div class="l2-over" style="justify-content:center">
+<div class="l2-icon" style="color:#fff">⏳</div>
+<div class="l2-txt">Loading...</div>
+<div class="l2-xp"><i style="width:45%;background:#9a5cf0"></i></div>
+<div class="l2-txt">45%</div>
+</div>
+</div>`,
+b: `
+<div class="hud-scene">
+<img src="img/Moonlit Fairy-Tale Landscape.png" class="hs-bg" alt="">
+<div class="l2-over">
+<div class="l2-title">Loading...</div>
+<div class="l2-xp gold"><i style="width:45%"></i></div>
+<div class="l2-txt">45%</div>
+</div>
+</div>`,
+correct: "B",
+explanation: "Option B keeps the player engaged while waiting by using visuals, a themed background, and a clear progress bar. Option A is plain and boring."
+},
+/* ---------- Q13: Mistake – tiny attack button (correct A) ---------- */
+{
+type: "mistake",
+text: "What's the UI mistake in this game screen?",
+screen: `
+<div class="gs-hud">
+<div class="gs-hero">
+<img src="img/hero.png" alt="">
+<div class="gs-info">
+<b>Lv. 5</b>
+<div class="gs-xp"><i></i><span>XP: 120 / 500</span></div>
+</div>
+</div>
+<div class="gs-money">
+<div class="gs-chip">🪙 250</div>
+<div class="gs-chip">💎 10</div>
+</div>
+</div>
+<img src="img/warrior.png" class="gs-knight" alt="">
+<div class="hs-stick"><i></i></div>
+<div class="l2-tiny">⚔</div>`,
+optionA: "The Attack button is too small to tap easily",
+optionB: "The joystick is placed on the left side",
+correct: "A",
+explanation: "On touch screens the main action button must be big enough for a thumb. Here the Attack button is tiny and hard to hit, while the joystick on the left is perfectly normal."
+},
+/* ---------- Q14: Sound Settings (correct A) ---------- */
+{
+type: "images",
+text: "Which Sound Settings design gives players better control of the audio?",
+shotClass: "shot purple",
+a: `
+<div class="l2-col">
+<div class="l2-title">🎧 Audio Settings</div>
+<div class="l2-sl"><span>🎵</span><b>Music</b><div class="l2-xp thin gold"><i style="width:80%"></i></div><em>80%</em></div>
+<div class="l2-sl"><span>🔊</span><b>SFX</b><div class="l2-xp thin gold"><i style="width:100%"></i></div><em>100%</em></div>
+<div class="l2-sl"><span>🎤</span><b>Voice</b><div class="l2-xp thin gold"><i style="width:70%"></i></div><em>70%</em></div>
+</div>`,
+b: `
+<div class="l2-row" style="gap:calc(var(--u)*1.6)">
+<div class="l2-icon" style="color:#f6ecff">🔊</div>
+<div class="l2-txt">On / Off</div>
+<div class="l2-toggle"><i></i></div>
+</div>`,
+correct: "A",
+explanation: "Option A lets players adjust Music, SFX, and Voice separately to their preference. Option B only has one On/Off switch, so there is almost no control."
+},
+/* ---------- Q15: Post-Game Screen (correct B) ---------- */
+{
+type: "images",
+text: "Which Post-Game Screen creates a more satisfying experience after completing the game?",
+shotClass: "shot night",
+a: `
+<div class="l2-col">
+<div class="l2-icon">⭐</div>
+<div class="l2-title">Victory!</div>
+<div class="l2-txt">You Finished the Game!</div>
+<div class="l2-btn">OK</div>
+</div>`,
+b: `
+<div class="l2-col">
+<div class="l2-title">👑 Victory! 👑</div>
+<div class="l2-txt">Mission Complete!</div>
+<div class="l2-row">
+<div class="l2-rew">🪙<small>×1000</small></div>
+<div class="l2-rew">💎<small>×10</small></div>
+<div class="l2-rew">✨<small>×500 XP</small></div>
+</div>
+<div class="l2-row">
+<div class="l2-btn y">🔄 Play Again</div>
+<div class="l2-btn">🏠 Main Menu</div>
+</div>
+</div>`,
+correct: "B",
+explanation: "Option B celebrates the player's achievement, shows clear rewards, and gives next-action options. Option A just says the game is finished and offers one empty OK button."
+}
+];
+
+let score = 0;
+let correctCount = 0;
+let wrongCount = 0;
+let current = 0;
+let answered = false;
+let missed = false;
+
+document.getElementById("qTotal").innerHTML = questions.length;
+
+function loadQuestion(){
+let q = questions[current];
+document.getElementById("qNum").innerHTML = current + 1;
+document.getElementById("questionText").innerHTML = q.text;
+missed = false;
+if(q.type == "mistake"){
+document.getElementById("imageOptions").style.display = "none";
+document.getElementById("mistakeOptions").style.display = "block";
+document.getElementById("gameScreen").innerHTML = q.screen;
+document.getElementById("optA").innerHTML = q.optionA;
+document.getElementById("optB").innerHTML = q.optionB;
+}else{
+document.getElementById("mistakeOptions").style.display = "none";
+document.getElementById("imageOptions").style.display = "flex";
+document.getElementById("shotA").className = q.shotClass;
+document.getElementById("shotB").className = q.shotClass;
+document.getElementById("shotA").innerHTML = q.a;
+document.getElementById("shotB").innerHTML = q.b;
+}
+}
+
+function closeResult(){
+document.getElementById("resultOverlay").style.display = "none";
+document.getElementById("correctBox").style.display = "none";
+document.getElementById("wrongBox").style.display = "none";
+}
+
+function chooseAnswer(choice){
+if(answered == true){
+return;
+}
+answered = true;
+let q = questions[current];
+document.getElementById("resultOverlay").style.display = "flex";
+if(choice == q.correct){
+if(missed == false){
+score = score + 10;
+correctCount = correctCount + 1;
+document.getElementById("pointsText").innerHTML = "+10 Points";
+}else{
+document.getElementById("pointsText").innerHTML = "+0 Points";
+}
+document.getElementById("score").innerHTML = score;
+document.getElementById("correctBox").style.display = "block";
+}else{
+if(missed == false){
+missed = true;
+wrongCount = wrongCount + 1;
+}
+document.getElementById("explanationText").innerHTML = q.explanation;
+document.getElementById("wrongBox").style.display = "block";
+}
+}
+
+function tryAgain(){
+closeResult();
+answered = false;
+}
+
+function saveScore(){
+let name = localStorage.getItem("playerName") || "Player";
+let scores = JSON.parse(localStorage.getItem("scores")) || [];
+scores.push({ name: name, score: score, correct: correctCount, total: questions.length, level: 2 });
+scores.sort(function(a, b){ return b.score - a.score; });
+localStorage.setItem("scores", JSON.stringify(scores.slice(0, 10)));
+}
+
+function showFinal(){
+let total = questions.length;
+let percent = Math.round((correctCount / total) * 100);
+document.getElementById("fCorrect").innerHTML = correctCount;
+document.getElementById("fWrong").innerHTML = total - correctCount;
+document.getElementById("fScore").innerHTML = score + " / " + (total * 10);
+document.getElementById("fPercent").innerHTML = percent + "%";
+document.getElementById("fRing").style.background = "conic-gradient(#7a3fc0 " + percent + "%, #e4d4fc 0)";
+if(percent >= 80){
+document.getElementById("fTitle").innerHTML = "👑 Great Job! 👑";
+document.getElementById("fText").innerHTML = "You completed the level with a strong performance! Your UX/UI skills are really improving!";
+}else if(percent >= 50){
+document.getElementById("fTitle").innerHTML = "Good Work!";
+document.getElementById("fText").innerHTML = "You spotted many of the mistakes. Keep practicing to get even better!";
+}else{
+document.getElementById("fTitle").innerHTML = "Keep Trying!";
+document.getElementById("fText").innerHTML = "UI mistakes can be tricky. Read the explanations and try the next level!";
+}
+/* save this level's result so the final screen can add all levels together */
+localStorage.setItem("level2Result", JSON.stringify({
+correct: correctCount,
+wrong: total - correctCount,
+score: score
+}));
+document.getElementById("gameBox").style.display = "none";
+document.getElementById("finalScreen").style.display = "flex";
+}
+function nextQuestion(){
+closeResult();
+answered = false;
+current = current + 1;
+if(current >= questions.length){
+saveScore();
+showFinal();
+}else{
+loadQuestion();
+}
+}
+function nextLevel(){
+localStorage.setItem("unlockedLevel", "3");
+window.location.href = "levels.html";
+}
+function goHome(){
+window.location.href = "index.html";
+}
+loadQuestion();
+</script>
+</body>
+</html>

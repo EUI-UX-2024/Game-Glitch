@@ -1526,6 +1526,7 @@ gap:calc(var(--u)*0.8);
 display:flex;
 gap:calc(var(--u)*0.8);
 }
+
 .act-ic{
 display:flex;
 align-items:center;
@@ -1739,7 +1740,6 @@ min-width:calc(var(--u)*24);
 height:calc(var(--u)*4);
 font-size:calc(var(--u)*1.8);
 }
-
 @keyframes pop{
 0%{
 transform:scale(0.7);
