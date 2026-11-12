@@ -9,14 +9,13 @@
 <body>
 <section class="instructions" id="game">
 <button class="game-home" id="gameHomeBtn" onclick="goHome()"><span>🏠</span></button>
-<div class="instructions-box">
+<div class="instructions-box" id="gameBox">
 <img src="img/small-controller.gif" class="how-controller" alt="Game Controller">
-<h1 class="how-title q-title">Question <span id="qNum">1</span> / 20</h1>
+<h1 class="how-title q-title">Question <span id="qNum">1</span> / <span id="qTotal">15</span></h1>
 <div class="top-pill level-pill"><img src="img/castle-color.png" class="pill-img" alt="">Level 1</div>
 <div class="top-pill score-pill"><span class="pill-icon">⭐</span>Score: <span id="score">0</span></div>
 <div class="game-content">
 <div class="question-bar" id="questionText"></div>
-
 <div class="options" id="imageOptions">
 <div class="option" onclick="chooseAnswer('A')">
 <div class="shot" id="shotA"></div>
@@ -27,7 +26,6 @@
 <div class="ab">B</div>
 </div>
 </div>
-
 <div class="mistake-wrap" id="mistakeOptions">
 <div class="game-screen" id="gameScreen"></div>
 <div class="text-options">
@@ -41,14 +39,13 @@
 </div>
 </div>
 </div>
-
 </div>
 </div>
 <div class="result-overlay" id="resultOverlay">
 <div class="result-box" id="correctBox">
 <div class="res-badge">✅</div>
 <h2>Correct Answer!</h2>
-<div class="points">+10 Points</div>
+<div class="points" id="pointsText">+10 Points</div>
 <p class="msg">Great job! You spotted the better design. 🎉</p>
 <div class="res-buttons">
 <button class="res-btn next-btn" onclick="nextQuestion()">Next Question →</button>
@@ -63,6 +60,23 @@
 <button class="res-btn try-btn" onclick="tryAgain()">🔄 Try Again</button>
 <button class="res-btn next-btn" onclick="nextQuestion()">Next Question →</button>
 </div>
+</div>
+</div>
+<div class="final-screen" id="finalScreen">
+<div class="final-box">
+<img src="img/trophy.png" class="final-trophy" alt="">
+<h2 class="final-title">Game Complete!</h2>
+<div class="final-stats">
+<div class="stat"><span class="stat-icon">🎯</span><div><small>Correct</small><b id="fCorrect">0</b></div></div>
+<div class="stat"><span class="stat-icon">❌</span><div><small>Incorrect</small><b id="fWrong">0</b></div></div>
+<div class="stat"><span class="stat-icon">⭐</span><div><small>Final Score</small><b id="fScore">0</b></div></div>
+<div class="stat"><div class="ring" id="fRing"><span id="fPercent">0%</span></div></div>
+</div>
+<div class="final-msg">
+<h3 id="fTitle"></h3>
+<p id="fText"></p>
+</div>
+<button class="res-btn next-btn final-btn" onclick="nextLevel()">Next Level →</button>
 </div>
 </div>
 </section>
@@ -182,7 +196,7 @@ a: `
 <img src="img/home-bg-good.png" class="hs-bg" alt="">
 <img src="img/warrior.png" class="hs-char" alt="">
 <img src="img/hero.png" class="hs-hero" alt="">
-div class="hs-bars"><b>Lv. 5</b><i></i><i class="b"></i><i class="y"></i></div>
+<div class="hs-bars"><b>Lv. 5</b><i></i><i class="b"></i><i class="y"></i></div>
 <div class="hs-mini"></div>
 <div class="hs-potions"><i></i><i></i><i></i><i></i></div>
 <img src="img/skills.png" class="hs-skills" alt="">
@@ -226,20 +240,85 @@ a: `<div class="big-icon">💾</div>`,
 b: `<div class="big-icon">⚙</div>`,
 correct: "A",
 explanation: "The floppy disk is the classic Save icon. The gear means Settings."
+},
+{
+type: "images",
+text: "Which game objective is clearer and easier to follow?",
+shotClass: "shot photo",
+a: `
+<div class="hud-scene">
+<img src="img/wall.png" class="hs-bg" alt="">
+<div class="obj-good">
+<div class="obj-tag">Objective</div>
+<div class="obj-body"><span class="obj-icon">📜</span><p>Find the <em>Key</em><br>and open the <em>Gate</em>.</p></div>
+</div>
+</div>`,
+b: `
+<div class="hud-scene">
+<img src="img/wall.png" class="hs-bg" alt="">
+<div class="obj-bad"><span>📜</span><div><b>Objective</b><i>???</i></div></div>
+</div>`,
+correct: "A",
+explanation: "Option A tells the player exactly what to do with a clear title and a short instruction. Option B only shows question marks, so the player has no idea what the goal is."
+},
+{
+type: "images",
+text: "Which game interface has a clearer Action button?",
+shotClass: "shot purple",
+a: `
+<div class="act-scene">
+<img src="img/open-chest.png" class="act-chest" alt="">
+<div class="act-col">
+<div class="act-collect"><i></i>Collect</div>
+<div class="act-cancel">Cancel</div>
+</div>
+</div>`,
+b: `
+<div class="act-scene">
+<img src="img/open-chest.png" class="act-chest" alt="">
+<div class="act-icons">
+<div class="act-ic top">✕</div>
+<div class="act-row"><div class="act-ic">⬇</div><div class="act-ic">»</div></div>
+</div>
+</div>`,
+correct: "A",
+explanation: "Option A uses a big green button with a clear 'Collect' label and a smaller Cancel button. Option B shows unlabeled gray icons, so players cannot tell what each one does."
+},
+{
+type: "images",
+text: "Which design gives clear feedback after collecting the item?",
+shotClass: "shot night",
+a: `
+<div class="fb-scene">
+<div class="fb-rays"></div>
+<img src="img/coin.png" class="fb-coin" alt="">
+<div class="fb-ribbon">Item Collected!</div>
+<div class="fb-plus"><img src="img/coin.png" alt="">+10 Coins</div>
+</div>`,
+b: `
+<div class="fb-scene">
+<div class="fb-rays dim"></div>
+<img src="img/coin.png" class="fb-coin" alt="">
+</div>`,
+correct: "A",
+explanation: "Option A confirms the action with a clear message and shows the reward. Option B shows only a coin, so the player does not know if anything happened."
 }
 ];
 
 let score = 0;
 let correctCount = 0;
+let wrongCount = 0;
 let current = 0;
 let answered = false;
-let gotCorrect = false;
+let missed = false;
+
+document.getElementById("qTotal").innerHTML = questions.length;
 
 function loadQuestion(){
 let q = questions[current];
 document.getElementById("qNum").innerHTML = current + 1;
 document.getElementById("questionText").innerHTML = q.text;
-gotCorrect = false;
+missed = false;
 if(q.type == "mistake"){
 document.getElementById("imageOptions").style.display = "none";
 document.getElementById("mistakeOptions").style.display = "block";
@@ -270,12 +349,20 @@ answered = true;
 let q = questions[current];
 document.getElementById("resultOverlay").style.display = "flex";
 if(choice == q.correct){
+if(missed == false){
 score = score + 10;
 correctCount = correctCount + 1;
-gotCorrect = true;
+document.getElementById("pointsText").innerHTML = "+10 Points";
+}else{
+document.getElementById("pointsText").innerHTML = "+0 Points";
+}
 document.getElementById("score").innerHTML = score;
 document.getElementById("correctBox").style.display = "block";
 }else{
+if(missed == false){
+missed = true;
+wrongCount = wrongCount + 1;
+}
 document.getElementById("explanationText").innerHTML = q.explanation;
 document.getElementById("wrongBox").style.display = "block";
 }
@@ -294,17 +381,41 @@ scores.sort(function(a, b){ return b.score - a.score; });
 localStorage.setItem("scores", JSON.stringify(scores.slice(0, 10)));
 }
 
+function showFinal(){
+let total = questions.length;
+let percent = Math.round((correctCount / total) * 100);
+document.getElementById("fCorrect").innerHTML = correctCount;
+document.getElementById("fWrong").innerHTML = total - correctCount;
+document.getElementById("fScore").innerHTML = score + " / " + (total * 10);
+document.getElementById("fPercent").innerHTML = percent + "%";
+document.getElementById("fRing").style.background = "conic-gradient(#7a3fc0 " + percent + "%, #e4d4fc 0)";
+if(percent >= 80){
+document.getElementById("fTitle").innerHTML = "👑 Great Job! 👑";
+document.getElementById("fText").innerHTML = "You completed the level with a strong performance! Your UX/UI skills are really improving!";
+}else if(percent >= 50){
+document.getElementById("fTitle").innerHTML = "Good Work!";
+document.getElementById("fText").innerHTML = "You spotted many of the mistakes. Keep practicing to get even better!";
+}else{
+document.getElementById("fTitle").innerHTML = "Keep Trying!";
+document.getElementById("fText").innerHTML = "UI mistakes can be tricky. Read the explanations and try the next level!";
+}
+document.getElementById("gameBox").style.display = "none";
+document.getElementById("finalScreen").style.display = "flex";
+}
 function nextQuestion(){
 closeResult();
 answered = false;
 current = current + 1;
 if(current >= questions.length){
 saveScore();
-alert("Great job! Your score: " + score + "\nCorrect answers: " + correctCount + " / " + questions.length + "\nMore questions are coming soon!");
-window.location.href = "levels.html";
+showFinal();
 }else{
 loadQuestion();
 }
+}
+function nextLevel(){
+localStorage.setItem("unlockedLevel", "2");
+window.location.href = "levels.html";
 }
 function goHome(){
 window.location.href = "index.html";
