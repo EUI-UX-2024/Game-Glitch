@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+<title>Question - Game Glitch (Level 3)</title>
+</head>
+<body>
+<section class="instructions level3-bg" id="game">
+<button class="game-home" id="gameHomeBtn" onclick="goHome()"><span>🏠</span></button>
+<div class="instructions-box" id="gameBox">
+<img src="img/small-controller.gif" class="how-controller" alt="Game Controller">
+<h1 class="how-title q-title">Question <span id="qNum">1</span> / <span id="qTotal">15</span></h1>
+<div class="top-pill level-pill"><img src="img/level-icon.png" class="pill-img" alt="">Level 3</div>
+<div class="top-pill score-pill"><span class="pill-icon">⭐</span>Score: <span id="score">0</span></div>
+<div class="game-content">
+<div class="question-bar" id="questionText"></div>
+<div class="options" id="imageOptions">
+<div class="option" onclick="chooseAnswer('A')">
+<div class="shot" id="shotA"></div>
+<div class="ab">A</div>
+</div>
+<div class="option" onclick="chooseAnswer('B')">
+<div class="shot" id="shotB"></div>
+<div class="ab">B</div>
+</div>
+</div>
+<div class="mistake-wrap" id="mistakeOptions">
+<div class="game-screen" id="gameScreen"></div>
+<div class="text-options">
+<div class="text-opt" onclick="chooseAnswer('A')">
+<div class="t-badge">A</div>
+<p id="optA"></p>
+</div>
+<div class="text-opt" onclick="chooseAnswer('B')">
+<div class="t-badge">B</div>
+<p id="optB"></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="result-overlay" id="resultOverlay">
+<div class="result-box" id="correctBox">
+<div class="res-badge">✅</div>
+<h2>Correct Answer!</h2>
+<div class="points" id="pointsText">+10 Points</div>
+<p class="msg">Great job! You spotted the better design. 🎉</p>
+<div class="res-buttons">
+<button class="res-btn next-btn" onclick="nextQuestion()">Next Question →</button>
+</div>
+</div>
+<div class="result-box wide" id="wrongBox">
+<div class="res-badge">❌</div>
+<h2>Wrong Answer</h2>
+<p class="msg">That's not the best choice this time.</p>
+<p class="explain" id="explanationText"></p>
+<div class="res-buttons">
+<button class="res-btn try-btn" onclick="tryAgain()">🔄 Try Again</button>
+<button class="res-btn next-btn" onclick="nextQuestion()">Next Question →</button>
+</div>
+</div>
+</div>
+<div class="final-screen" id="finalScreen">
+<div class="final-box">
+<img src="img/trophy.png" class="final-trophy" alt="">
+<h2 class="final-title">Game Complete!</h2>
+<div class="final-stats">
+<div class="stat"><span class="stat-icon">🎯</span><div><small>Correct</small><b id="fCorrect">0</b></div></div>
+<div class="stat"><span class="stat-icon">❌</span><div><small>Incorrect</small><b id="fWrong">0</b></div></div>
+<div class="stat"><span class="stat-icon">⭐</span><div><small>Final Score</small><b id="fScore">0</b></div></div>
+<div class="stat"><div class="ring" id="fRing"><span id="fPercent">0%</span></div></div>
+</div>
+<div class="final-msg">
+<h3 id="fTitle"></h3>
+<p id="fText"></p>
+</div>
+<button class="res-btn next-btn final-btn" onclick="restartGame()">🔄 Restart Game</button>
+</div>
+</div>
+</section>
+<script>
+const img = (n, h) => '<img src="img/' + n + '.png" style="height:calc(var(--u)*' + h + ');width:auto" alt="">';
+const btn = (t, c) => '<div class="l2-btn ' + (c || '') + '">' + t + '</div>';
+const star = (on, s) => '<i class="l3-star' + (on ? '' : ' off') + '" style="--s:' + (s || 1.4) + '"></i>';
+const stars = (n, s) => star(n > 0, s) + star(n > 1, s) + star(n > 2, s);
+const dot = (c, t) => '<span class="l3-dot ' + c + '">' + (t || '') + '</span>';
+const row = (ic, t, end, cls) => '<div class="l3-r ' + (cls || '') + '">' + ic + '<span class="t">' + t + '</span>' + (end || '') + '</div>';
+const list = x => '<div class="l3-list">' + x + '</div>';
+const col = x => '<div class="l2-col">' + x + '</div>';
+const rw = x => '<div class="l2-row">' + x + '</div>';
+const mini = w => '<span class="l3-mini"><i style="width:' + w + '"></i></span>';
+const tg = on => '<span class="l3-tg' + (on ? '' : ' off') + '"><i></i></span>';
+const chk = () => '<i class="l3-check"></i>';
+const rew = (ic, l) => '<div class="l2-rew">' + ic + '<small>' + l + '</small></div>';
+const tabs = (arr) => '<div class="l3-tabs">' + arr.map((t, i) => '<span class="l3-tab' + (i == 0 ? ' on' : '') + '">' + t + '</span>').join('') + '</div>';
+const SW = "Glossy Purple Sword Badge", PT = "Glossy Pink Potion Bottle", CN = "coin", CH = "chest", SK = "skills";
+
+/* good = the correct design, bad = the weaker one, side = where the correct one appears (A or B) */
+function Q(text, good, bad, side, expl){
+return {
+type: "images",
+text: text,
+shotClass: "shot purple",
+a: side == "A" ? good : bad,
+b: side == "A" ? bad : good,
+correct: side,
+explanation: expl.split("{G}").join(side).split("{W}").join(side == "A" ? "B" : "A")
+};
+}
+
+let questions = [
+Q("Which HUD layout keeps important info visible without clutter?",
+img("Cartoon Adventure HUD Icon Set", 13),
+img("Cartoon Avatar, Hearts, and Energy Bar", 13),
+"B",
+"Option {G} groups health, energy and quick-use items into one tidy panel, so players see what matters at a glance. Option {W} shows health only, so players can't see their items."),
+
+Q("Which Skill Tree design is easier to plan and understand?",
+img("Glowing Sword Skill Tree Icon", 13),
+img("Glossy Purple Skill Tree Icon", 13),
+"A",
+"Option {G} shows clear skill paths and what each node unlocks, so players can plan ahead. Option {W} shows only locks, so players can't tell what each skill does."),
+
+Q("Which Map UI helps the player navigate and find objectives faster?",
+rw(img("Colorful Fantasy Village Mini-Map", 12) + '<div class="l3-box"><div class="l3-legend"><b>LEGEND</b><div class="l3-lg">' + dot('y', '!') + 'Quest</div><div class="l3-lg">' + dot('p', '$') + 'Shop</div><div class="l3-lg">' + dot('b', 'T') + 'Teleport</div></div></div>'),
+img("Colorful Fantasy Village Mini-Map", 13),
+"A",
+"Option {G} adds a legend that explains each map symbol, so players find quests, shops and teleports faster. Option {W} shows a map with no explanation."),
+
+Q("Which Quest Tracking UI gives clearer progress and priority?",
+list(
+row(dot('r', '!'), 'Defeat Boss', mini('0%') + '<em>0 / 1</em>', 'hot') +
+row(dot('y', '!'), 'Collect Herbs', mini('50%') + '<em>5 / 10</em>') +
+row(dot('g'), 'Explore Cave', chk())
+),
+list(
+row('<span class="l3-ring"></span>', 'Collect Herbs') +
+row('<span class="l3-ring"></span>', 'Defeat Boss') +
+row('<span class="l3-ring"></span>', 'Explore Cave')
+),
+"B",
+"Option {G} shows progress and highlights the urgent quest, so players know what to do first. Option {W} is a plain list with no progress or priority."),
+
+Q("Which Crafting UI is more efficient for the player?",
+list(
+row(img(SW, 2.4), 'Sword', '', 'hot') +
+row(img("backpack", 2.4), 'Backpack') +
+row(img(PT, 2.4), 'Potion')
+),
+col(img(SW, 5) + rw('<div class="l3-cell">' + img(CN, 2.2) + '</div><div class="l3-cell">' + img(PT, 2.2) + '</div><div class="l3-cell">' + img(SK, 2.2) + '</div>') + btn('Craft', 'y small')),
+"B",
+"Option {G} lists every craftable item and highlights the selected one, so players can compare and choose quickly. Option {W} shows one item at a time and makes players guess what is needed."),
+
+Q("Which Settings UI provides better accessibility and control?",
+col(tabs(['Audio', 'Video', 'Controls']) + list(row('', 'Music', tg(1)) + row('', 'SFX', tg(1)) + row('', 'Voice', tg(0)))),
+list(
+'<div class="l3-r"><span class="l3-ring"></span><div class="l2-xp thin gold"><i style="width:80%"></i></div></div>' +
+'<div class="l3-r"><span class="l3-ring"></span><div class="l2-xp thin gold"><i style="width:55%"></i></div></div>' +
+'<div class="l3-r"><span class="l3-ring"></span><div class="l2-xp thin gold"><i style="width:70%"></i></div></div>'
+),
+"A",
+"Option {G} groups settings into tabs with clear labels and on/off switches. Option {W} uses unlabeled sliders, so players can't tell what each one controls."),
+
+Q("Which Onboarding flow gives a better first-time experience?",
+col(img("Cartoon RPG Game HUD Panel", 7.5) + '<div class="l2-txt">Move and Attack</div><div class="l3-steps"><i class="on">1</i><i>2</i><i>3</i></div>' + btn('Next ›', 'y small')),
+col(img("controller", 5) + '<div class="l2-title">Tap to Play!</div>' + btn('OK', 'y small')),
+"B",
+"Option {G} shows the controls visually with step markers and a short instruction, so new players learn by seeing. Option {W} gives no instructions at all."),
+
+Q("Which Reward Screen feels more valuable to the player?",
+col(img(CH, 3.4) + '<div class="l2-title">Rewards!</div>' + rw(rew(img(CN, 2.2), '×500') + rew(img(PT, 2.2), '×10') + rew('<span>XP</span>', '×250')) + btn('Claim', 'y small')),
+col('<div class="l2-txt">You Got:</div>' + img(CN, 4.4) + '<div class="l2-title">×500</div>' + btn('OK', 'y small')),
+"A",
+"Option {G} shows every reward with clear icons and amounts plus a Claim button, so it feels valuable. Option {W} shows only one number, so it feels empty."),
+
+Q("Which Level Selection UI scales better as the game grows?",
+list(
+row('<img class="l3-th" src="img/forest.png" alt="">', '<b>Forest World</b>', '<em>12 / 15</em>') +
+row('<img class="l3-th" src="img/cave.png" alt="">', '<b>Cave World</b>', '<em>12 / 15</em>') +
+row('<img class="l3-th" src="img/Whimsical Castle Valley at Sunset.png" alt="">', '<b>Sky World</b>', '<em>0 / 15</em>')
+),
+'<div class="l3-grid"><div class="l3-num">1</div><div class="l3-num">2</div><div class="l3-num">3</div><div class="l3-num lk">4<span class="l3-lock"></span></div><div class="l3-num lk">5<span class="l3-lock"></span></div><div class="l3-num lk">6<span class="l3-lock"></span></div></div>',
+"A",
+"Option {G} shows each world with a preview and progress, so it still works when the game has many levels. Option {W} is a plain number grid that gets hard to use as levels grow."),
+
+Q("Which Leaderboard design is more informative and motivating?",
+list(
+'<div class="l3-r hd"><span>#</span><span class="t">Player</span><em>Score</em></div>' +
+row(dot('y', '1'), 'Player A', '<em>12,500</em>', 'hot') +
+row(dot('p', '2'), 'Player B', '<em>10,300</em>') +
+row(dot('b', '3'), 'Player C', '<em>9,800</em>')
+),
+list(row(dot('y', '1'), 'Player A') + row(dot('p', '2'), 'Player B') + row(dot('b', '3'), 'Player C')),
+"B",
+"Option {G} shows rank, player name and score in clear columns, which makes comparing easy and motivates players to climb. Option {W} lists names with no scores."),
+
+Q("Which Daily Login UI encourages long-term engagement?",
+col('<div class="l2-title">Daily Login</div>' + rw(
+'<div class="l3-day done">Day 1' + chk() + '</div>' +
+'<div class="l3-day now">Day 2' + img(CN, 3.2) + '</div>' +
+'<div class="l3-day">Day 3' + img(PT, 3.2) + '</div>' +
+'<div class="l3-day">Day 7' + img(CH, 3.2) + '</div>')),
+col('<div class="l2-txt">Daily Reward</div>' + img(CN, 4.4) + '<div class="l2-title">×100</div>' + btn('Claim', 'y small')),
+"A",
+"Option {G} shows the whole week of rewards and highlights today's reward, which gives players a reason to come back every day. Option {W} shows only one reward."),
+
+Q("Which Item Information UI helps players make better decisions?",
+col(rw(img(SW, 6) + '<div class="l3-legend"><b>Iron Sword</b><div>' + stars(3, 1.2) + '</div><div>ATK +10</div><div>Crit +5%</div></div>') + '<div class="l2-txt">A reliable sword for early battles.</div>' + btn('Equip', 'y small')),
+col(img(SW, 5) + '<div class="l2-txt">Iron Sword</div><div class="l2-txt">ATK +10</div>' + btn('Equip', 'y small')),
+"B",
+"Option {G} shows the item's rating, stats and a short description, so players can decide before equipping. Option {W} shows too little to compare items."),
+
+Q("Which Inventory Management UI is more efficient for sorting and finding items?",
+col(tabs(['All', 'Weapons', 'Potions', 'Items']) + img("inv-frames", 9)),
+img("inv-plain", 11),
+"A",
+"Option {G} adds filter tabs and framed slots, so players find items quickly in a big inventory. Option {W} has no sorting or filtering."),
+
+Q("Which Save/Load UI is safer and clearer for the player?",
+list(
+row(img("hero", 2.6), '<b>Slot 1</b><small>Lv. 15 - 12 Jan 14:20</small>') +
+row(img("warrior", 2.6), '<b>Slot 2</b><small>Lv. 8 - 10 Jan 09:15</small>') +
+row('<span class="l3-plus"></span>', '<b>Empty Slot</b>')
+),
+col(btn('Save Game', 'wide') + btn('Load Game', 'wide')),
+"B",
+"Option {G} shows each save slot with level and date and marks empty slots, so players avoid overwriting a save by mistake. Option {W} gives two buttons with no information."),
+
+Q("Which End-of-Level Summary better helps the player improve?",
+col('<div class="l2-title">Level Complete!</div>' + '<div>' + stars(3, 2.4) + '</div>' + rw('<div class="l3-stat"><small>Time</small><b>02:15</b></div><div class="l3-stat"><small>Defeated</small><b>24</b></div><div class="l3-stat"><small>Coins</small><b>750</b></div>') + btn('Next', 'y small')),
+col('<div class="l2-title">Level Complete!</div><div>' + stars(3, 3.2) + '</div>' + btn('Next', 'y small')),
+"A",
+"Option {G} shows stars and a performance summary (time, defeated, coins), so players can see how to improve. Option {W} only says the level is complete.")
+];
+
+let score = 0;
+let correctCount = 0;
+let wrongCount = 0;
+let current = 0;
+let answered = false;
+let missed = false;
+
+document.getElementById("qTotal").innerHTML = questions.length;
+
+function loadQuestion(){
+let q = questions[current];
+document.getElementById("qNum").innerHTML = current + 1;
+document.getElementById("questionText").innerHTML = q.text;
+missed = false;
+if(q.type == "mistake"){
+document.getElementById("imageOptions").style.display = "none";
+document.getElementById("mistakeOptions").style.display = "block";
+document.getElementById("gameScreen").innerHTML = q.screen;
+document.getElementById("optA").innerHTML = q.optionA;
+document.getElementById("optB").innerHTML = q.optionB;
+}else{
+document.getElementById("mistakeOptions").style.display = "none";
+document.getElementById("imageOptions").style.display = "flex";
+document.getElementById("shotA").className = q.shotClass;
+document.getElementById("shotB").className = q.shotClass;
+document.getElementById("shotA").innerHTML = q.a;
+document.getElementById("shotB").innerHTML = q.b;
+}
+}
+
+function closeResult(){
+document.getElementById("resultOverlay").style.display = "none";
+document.getElementById("correctBox").style.display = "none";
+document.getElementById("wrongBox").style.display = "none";
+}
+
+function chooseAnswer(choice){
+if(answered == true){
+return;
+}
+answered = true;
+let q = questions[current];
+document.getElementById("resultOverlay").style.display = "flex";
+if(choice == q.correct){
+if(missed == false){
+score = score + 10;
+correctCount = correctCount + 1;
+document.getElementById("pointsText").innerHTML = "+10 Points";
+}else{
+document.getElementById("pointsText").innerHTML = "+0 Points";
+}
+document.getElementById("score").innerHTML = score;
+document.getElementById("correctBox").style.display = "block";
+}else{
+if(missed == false){
+missed = true;
+wrongCount = wrongCount + 1;
+}
+document.getElementById("explanationText").innerHTML = q.explanation;
+document.getElementById("wrongBox").style.display = "block";
+}
+}
+
+function tryAgain(){
+closeResult();
+answered = false;
+}
+
+function saveScore(){
+let name = localStorage.getItem("playerName") || "Player";
+let scores = JSON.parse(localStorage.getItem("scores")) || [];
+scores.push({ name: name, score: score, correct: correctCount, total: questions.length, level: 3 });
+scores.sort(function(a, b){ return b.score - a.score; });
+localStorage.setItem("scores", JSON.stringify(scores.slice(0, 10)));
+}
+
+function showFinal(){
+/* save Level 3 result, then add up all three levels */
+localStorage.setItem("level3Result", JSON.stringify({
+correct: correctCount,
+wrong: questions.length - correctCount,
+score: score
+}));
+let totalCorrect = 0;
+let totalWrong = 0;
+let totalScore = 0;
+for(let i = 1; i <= 3; i++){
+let r = JSON.parse(localStorage.getItem("level" + i + "Result"));
+if(r){
+totalCorrect = totalCorrect + r.correct;
+totalWrong = totalWrong + r.wrong;
+totalScore = totalScore + r.score;
+}
+}
+let totalQuestions = totalCorrect + totalWrong;
+let percent = Math.round((totalCorrect / totalQuestions) * 100);
+document.getElementById("fCorrect").innerHTML = totalCorrect;
+document.getElementById("fWrong").innerHTML = totalWrong;
+document.getElementById("fScore").innerHTML = totalScore + " / " + (totalQuestions * 10);
+document.getElementById("fPercent").innerHTML = percent + "%";
+document.getElementById("fRing").style.background = "conic-gradient(#7a3fc0 " + percent + "%, #e4d4fc 0)";
+if(percent >= 90){
+document.getElementById("fTitle").innerHTML = "👑 UI Master! 👑";
+document.getElementById("fText").innerHTML = "Outstanding! You spotted almost every game UI mistake across all three levels.";
+}else if(percent >= 70){
+document.getElementById("fTitle").innerHTML = "Great Job!";
+document.getElementById("fText").innerHTML = "You have strong UX/UI skills. A little more practice and you will be a master!";
+}else if(percent >= 50){
+document.getElementById("fTitle").innerHTML = "Good Work!";
+document.getElementById("fText").innerHTML = "You found many of the mistakes. Play again and read the explanations to improve!";
+}else{
+document.getElementById("fTitle").innerHTML = "Keep Trying!";
+document.getElementById("fText").innerHTML = "Game UI design takes practice. Restart the game and try to beat your score!";
+}
+document.getElementById("gameBox").style.display = "none";
+document.getElementById("finalScreen").style.display = "flex";
+}
+
+function nextQuestion(){
+closeResult();
+answered = false;
+current = current + 1;
+if(current >= questions.length){
+saveScore();
+showFinal();
+}else{
+loadQuestion();
+}
+}
+
+function restartGame(){
+localStorage.removeItem("unlockedLevel");
+localStorage.removeItem("level1Result");
+localStorage.removeItem("level2Result");
+localStorage.removeItem("level3Result");
+window.location.href = "index.html";
+}
+
+function goHome(){
+window.location.href = "index.html";
+}
+
+loadQuestion();
+</script>
+</body>
+</html>
